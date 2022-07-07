@@ -1,0 +1,16 @@
+.form-container {
+  margin: 0 auto;
+  width: 300px;
+  font-size: 16px;
+
+  .form-group {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+  }
+
+  button {
+    font-size: 16px;
+  }
+}
+
