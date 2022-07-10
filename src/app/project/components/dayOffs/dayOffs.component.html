@@ -1,0 +1,45 @@
+<app-navigation></app-navigation>
+
+<h2>Data</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+
+      <th>Days</th>
+
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let row of rows">
+      <td>{{ row.type }}</td>
+
+      <td>{{ row.days }}</td>
+
+      <td>
+        <button class="btn btn-default" (click)="editData(row)">
+          Edit data
+        </button>
+
+        <button class="btn btn-default" (click)="deleteData(row);">
+          Delete data
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="isStoreEmpty">No data found</p>
+
+<button class="btn btn-default" (click)="addData();">
+  Add day
+</button>
+
+<div class="form-group">
+  <button class="btn btn-default" (click)="submit()">
+    Save
+  </button>
+</div>

@@ -1,0 +1,39 @@
+<div class="form-container">
+  <h2>Fill the form:</h2>
+  <form [formGroup]="addressForm" novalidate (ngSubmit)="submit()">
+    <div class="form-group">
+      <label>City</label>
+      <select name="city" id="city-select" formControlName="city">
+        <option value="">--Please choose the city--</option>
+        <option value="minsk">Minsk</option>
+        <option value="hrodno">Hrodno</option>
+        <option value="vitebsk">Vitebsk</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Street</label>
+      <input class="form-control" name="street" formControlName="street" />
+    </div>
+
+    <div class="form-group">
+      <label>House</label>
+      <input class="form-control" name="house" formControlName="house" />
+    </div>
+
+    <div class="form-group">
+      <label>Apartment</label>
+      <input class="form-control" name="apartment" formControlName="apartment" />
+    </div>
+
+    <div class="form-group">
+      <button class="btn btn-default" [disabled]="addressForm.invalid">
+        Submit data
+      </button>
+    </div>
+  </form>
+
+  <button class="btn btn-default" (click)="btnClick();">
+    See customers list
+  </button>
+</div>

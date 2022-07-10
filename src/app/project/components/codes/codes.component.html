@@ -1,0 +1,51 @@
+<app-navigation></app-navigation>
+
+<h2>Codes</h2>
+
+<form [formGroup]="myForm" (ngSubmit)="submit()">
+  <div formArrayName="codes">
+    <table>
+      <thead>
+        <tr>
+          <th>Codes</th>
+
+          <th>Description</th>
+
+          <th>Category</th>
+
+          <th>Rank</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of rows; let index = index">
+          <td>{{ row.code }}</td>
+
+          <td>{{ row.description }}</td>
+
+
+          <td>
+            <select class="form-control" name="category" id="category" [formControl]="getControl(index, 'category')">
+              <option value="1" selected>ignore</option>
+              <option value="2">business</option>
+              <option value="3">personal</option>
+            </select>
+          </td>
+
+          <td>
+            <input type="number" id="rank" name="rank" [formControl]="getControl(index, 'rank')" min="1">
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<p *ngIf="isStoreEmpty">No data found</p>
+
+<div class="form-group">
+  <button class="btn btn-default" (click)="submit()">
+    Save
+  </button>
+</div>

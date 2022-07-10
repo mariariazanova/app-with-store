@@ -1,0 +1,36 @@
+<app-navigation></app-navigation>
+
+<div class="form-container">
+  <form [formGroup]="myForm" novalidate (ngSubmit)="submit()">
+    <div class="form-group">
+        <label>System Name</label>
+        <input class="form-control" name="system name" formControlName="systemName" />
+    </div>
+
+    <div class="form-group">
+      <label>Name</label>
+      <input class="form-control" name="name" formControlName="name" />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <input class="form-control" name="description" formControlName="description" />
+    </div>
+
+    <div class="form-group">
+      <label>Execution Priority</label>
+      <select class="form-control" name="priority" id="priority-select" formControlName="executionPriority">
+        <option value="" selected="selected"></option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <button class="btn btn-default" [disabled]="myForm.invalid">
+        Save
+      </button>
+    </div>
+  </form>
+</div>
