@@ -6,5 +6,4 @@ export const reducers = {
   data: DataReducer.reducer,
 };
 
-// export const metaReducers: MetaReducer<State>[] = [];
 export const metaReducers: MetaReducer<State>[] = [];

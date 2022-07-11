@@ -1,9 +1,31 @@
 import { createAction, props } from '@ngrx/store';
-import { BaseData } from '../../../project/data/data.component';
+import { BaseData } from "../../../project/interfaces/base-data.interface";
+import {DayOffs} from "../../../project/components/dayOffs/dayOffs.component";
+import {Code} from "../../../project/components/codes/codes.component";
 
 export const appLoaded = createAction("[App] App Loaded");
 
 export const addDataItemFormSubmitted = createAction(
   "[Add Data] Add Data Item Form Submitted",
-  props<{ dataItem: BaseData }>()
+  props<{ dataItem: Partial<BaseData> }>()
+);
+
+export const addDataItemFormDialogSubmitted = createAction(
+  "[Add Day Offs] Add Data Item Form Dialog Submitted",
+  props<{ dataItem: DayOffs }>()
+);
+
+export const editDataItemFormDialogSubmitted = createAction(
+  "[Edit Day Offs] Edit Data Item Form Dialog Submitted",
+  props<{ dataItem: DayOffs }>()
+);
+
+export const deleteDataItemFormSubmitted = createAction(
+  "[Delete Day Offs] Delete Data Item Form Submitted",
+  props<{ dataItemIndex: string }>()
+);
+
+export const editCodeItemSubmitted = createAction(
+  "[Edit Code] Edit Code Submitted",
+  props<{ dataItem: Code[] }>()
 );

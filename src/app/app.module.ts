@@ -7,11 +7,11 @@ import { AppComponent } from './app.component';
 import { ProjectModule } from './project/project.module';
 import { environment } from '../environments/environment';
 import { StoreModule } from '@ngrx/store';
-import { metaReducers, reducers } from "./core/state";
+import { reducers } from "./core/state";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
