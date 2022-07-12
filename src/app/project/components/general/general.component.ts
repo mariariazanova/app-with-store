@@ -28,10 +28,10 @@ export class GeneralComponent implements OnInit {
 
   buildForm(): void {
     this.myForm = new FormGroup({
-      "systemName": new FormControl(),
-      "name": new FormControl(),
-      "description": new FormControl(),
-      "executionPriority": new FormControl(),
+      systemName: new FormControl(),
+      name: new FormControl(),
+      description: new FormControl(),
+      executionPriority: new FormControl(),
     });
   }
 

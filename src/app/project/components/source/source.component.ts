@@ -26,9 +26,9 @@ export class SourceComponent implements OnInit {
 
   buildForm(): void {
     this.myForm = new FormGroup({
-      "sourceDataBase": new FormControl(),
-      "sourceSchema": new FormControl(),
-      "sourceTable": new FormControl(),
+      sourceDataBase: new FormControl(),
+      sourceSchema: new FormControl(),
+      sourceTable: new FormControl(),
     });
   }
 

@@ -25,9 +25,9 @@ export class FormComponent implements OnInit {
 
   buildForm(): void {
     this.myForm = new FormGroup({
-      "index": new FormControl(),
-      "type": new FormControl(),
-      "days": new FormControl(),
+      index: new FormControl(),
+      type: new FormControl(),
+      days: new FormControl(),
     });
   }
 

@@ -18,6 +18,7 @@ const dataReducer = createReducer(
   on(DataActions.editDataItemFormDialogSubmitted, (state, { dataItem }) => {
     const dayOffIndex = state.dataItems.dayOffs.findIndex((item) => item.index === dataItem.index);
     const updatedDayOffsItems = [...state.dataItems.dayOffs];
+
     updatedDayOffsItems[dayOffIndex] = dataItem;
 
     return {
@@ -29,6 +30,7 @@ const dataReducer = createReducer(
   on(DataActions.deleteDataItemFormSubmitted, (state, { dataItemIndex }) => {
     const dayOffIndex = state.dataItems.dayOffs.findIndex((item) => item.index === dataItemIndex);
     const updatedDayOffsItems = [...state.dataItems.dayOffs];
+
     updatedDayOffsItems.splice(dayOffIndex, 1);
 
     return {
@@ -38,7 +40,8 @@ const dataReducer = createReducer(
   }),
 
   on(DataActions.editCodeItemSubmitted, (state, { dataItem }) => {
-    const updatedCodesItems: Code[] = JSON.parse(JSON.stringify(state.dataItems.codes)); //[...state.dataItems.codes];
+    const updatedCodesItems: Code[] = JSON.parse(JSON.stringify(state.dataItems.codes));
+
     updatedCodesItems.map((code, index) => {
       Object.assign(code, dataItem[index]);
     })
@@ -51,8 +54,5 @@ const dataReducer = createReducer(
 );
 
 export function reducer(state: DataState | undefined, action: Action) {
-  console.log(state);
-  console.log(action);
-  console.log(dataReducer(state, action));
   return dataReducer(state, action);
 }
