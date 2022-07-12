@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  addDataItemFormDialogSubmitted,
-  editDataItemFormDialogSubmitted
-} from "../../../core/state/data";
+import { Store } from "@ngxs/store";
+import { AddDataFromFormDialog, EditData } from "../../../actions/app.actions";
 
 @Component({
   selector: 'app-form',
@@ -41,16 +38,9 @@ export class FormComponent implements OnInit {
 
   submit(): void {
     if (Object.keys(this.value).includes('index')) {
-      this.store.dispatch(
-        editDataItemFormDialogSubmitted({
-          dataItem: this.myForm.value,
-        }));
+      this.store.dispatch(new EditData(this.myForm.value));
     } else {
-      this.store.dispatch(
-        addDataItemFormDialogSubmitted({
-          dataItem: this.myForm.value,
-        })
-      );
+      this.store.dispatch(new AddDataFromFormDialog(this.myForm.value));
     }
 
     this.router.navigate(['/dayOffs']);

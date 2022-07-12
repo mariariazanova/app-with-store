@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  editCodeItemSubmitted,
-  selectDataItems
-} from "../../../core/state/data";
+import { Component, OnInit }                              from '@angular/core';
+import { Router }                                         from "@angular/router";
+import { Store }                                          from "@ngxs/store";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { Observable }                                     from "rxjs";
+import { BaseData }                                       from "../../interfaces/base-data.interface";
+import { EditCodeData }                                   from "../../../actions/app.actions";
 
 export interface Code {
   code: string,
@@ -21,7 +20,7 @@ export interface Code {
 })
 export class CodesComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
+  baseData$: Observable<BaseData> = this.store.select(state => state.data.dataItems);
   rows: Code[] = [];
   isStoreEmpty: boolean = true;
 
@@ -61,15 +60,9 @@ export class CodesComponent implements OnInit {
     this.baseData$.subscribe(data => {
       (<FormArray>this.myForm.get('codes')).patchValue(data.codes);
     });
-    console.log((<FormArray>this.myForm.get('codes')).value);
-    console.log(this.rows);
   }
 
   submit(): void {
-    this.store.dispatch(
-      editCodeItemSubmitted({
-        dataItem: (<FormArray>this.myForm.get('codes')).value,
-      })
-    );
+    this.store.dispatch(new EditCodeData((<FormArray>this.myForm.get('codes')).value))
   }
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { addDataItemFormSubmitted, selectDataItems } from "../../../core/state/data";
 import { RandomizeService } from "../../services/randomize.service";
 import { Observable, tap } from "rxjs";
 import { BaseData } from "../../interfaces/base-data.interface";
+import { Store } from "@ngxs/store";
+import { AddData } from "../../../actions/app.actions";
 
 @Component({
   selector: 'app-general',
@@ -14,7 +14,7 @@ import { BaseData } from "../../interfaces/base-data.interface";
 })
 export class GeneralComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
+  baseData$: Observable<BaseData> = this.store.select(state => state.data.dataItems);
   data$!: Observable<Partial<BaseData>>;
   defaultValue: Partial<BaseData> = { systemName: RandomizeService.generateUuid() };
 
@@ -28,10 +28,10 @@ export class GeneralComponent implements OnInit {
 
   buildForm(): void {
     this.myForm = new FormGroup({
-      "systemName": new FormControl(),
-      "name": new FormControl(),
-      "description": new FormControl(),
-      "executionPriority": new FormControl(),
+      systemName: new FormControl(),
+      name: new FormControl(),
+      description: new FormControl(),
+      executionPriority: new FormControl(),
     });
   }
 
@@ -55,10 +55,6 @@ export class GeneralComponent implements OnInit {
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: this.myForm.value,
-      })
-    );
+    this.store.dispatch(new AddData(this.myForm.value));
   }
 }

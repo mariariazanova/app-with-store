@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  addDataItemFormSubmitted,
-  deleteDataItemFormSubmitted,
-  selectDataItems
-} from "../../../core/state/data";
+import { Router }            from "@angular/router";
+import { Store }             from "@ngxs/store";
+import { Observable }        from "rxjs";
+import { BaseData }            from "../../interfaces/base-data.interface";
+import { AddData, DeleteData } from "../../../actions/app.actions";
 
 export interface DayOffs {
   index: string,
@@ -19,7 +17,7 @@ export interface DayOffs {
   styleUrls: ['./dayOffs.component.scss']
 })
 export class DayOffsComponent implements OnInit {
-  baseData$ = this.store.select(selectDataItems);
+  baseData$: Observable<BaseData> = this.store.select(state => state.data.dataItems);
   rows: DayOffs[] = [];
   isStoreEmpty: boolean = true;
 
@@ -46,18 +44,10 @@ export class DayOffsComponent implements OnInit {
   }
 
   deleteData({ index }: DayOffs): void {
-    this.store.dispatch(
-      deleteDataItemFormSubmitted({
-        dataItemIndex: index,
-      })
-    );
+    this.store.dispatch(new DeleteData(index));
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: { dayOffs: this.rows },
-      })
-    );
+    this.store.dispatch(new AddData({ dayOffs: this.rows }));
   }
 }

@@ -49,9 +49,6 @@
     {
       "files": [
         "*.ts"
-      ],
-      "extends": [
-        "plugin:@ngrx/recommended"
       ]
     }
   ]
