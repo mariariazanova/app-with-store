@@ -34,14 +34,14 @@ export class CodesComponent implements OnInit {
 
   buildForm(): void {
     this.myForm = this.fb.group({
-      "codes": this.fb.array(this.rows.map(() => this.createRow())),
+      codes: this.fb.array(this.rows.map(() => this.createRow())),
     });
   }
 
   createRow(): FormGroup {
     return this.fb.group({
-      "category": new FormControl(),
-      "rank": new FormControl(),
+      category: new FormControl(),
+      rank: new FormControl(),
     });
   }
 
