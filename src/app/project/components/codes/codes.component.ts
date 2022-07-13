@@ -1,11 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  editCodeItemSubmitted,
-  selectDataItems
-} from "../../../core/state/data";
+import { Component, OnInit }                              from '@angular/core';
+import { Router }                                         from "@angular/router";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { DataService }                                    from "../../../core/state/data/data.service";
+import { DataQuery }                                      from "../../../core/state/data/data.query";
 
 export interface Code {
   code: string,
@@ -21,11 +18,11 @@ export interface Code {
 })
 export class CodesComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
+  baseData$ = this.dataQuery.select('dataItems');
   rows: Code[] = [];
   isStoreEmpty: boolean = true;
 
-  constructor(private router: Router, private store: Store, private fb: FormBuilder) { }
+  constructor(private router: Router, private dataService: DataService, private dataQuery: DataQuery, private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -64,10 +61,6 @@ export class CodesComponent implements OnInit {
   }
 
   submit(): void {
-    this.store.dispatch(
-      editCodeItemSubmitted({
-        dataItem: (<FormArray>this.myForm.get('codes')).value,
-      })
-    );
+    this.dataService.updateCodes((<FormArray>this.myForm.get('codes')).value);
   }
 }

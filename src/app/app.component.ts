@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Store } from "@ngrx/store";
-import { appLoaded } from "./core/state/data";
+import { ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
+import { akitaDevtools } from '@datorama/akita';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +7,9 @@ import { appLoaded } from "./core/state/data";
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  constructor(private store: Store) {}
-
-  ngOnInit(): void {
-    this.store.dispatch(appLoaded());
+  constructor(private ngZone: NgZone) {
+    akitaDevtools(ngZone);
   }
 }

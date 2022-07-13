@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  addDataItemFormSubmitted,
-  deleteDataItemFormSubmitted,
-  selectDataItems
-} from "../../../core/state/data";
+import { Router }            from "@angular/router";
+import { DataService }       from "../../../core/state/data/data.service";
+import { DataQuery }         from "../../../core/state/data/data.query";
 
 export interface DayOffs {
   index: string,
@@ -19,11 +15,11 @@ export interface DayOffs {
   styleUrls: ['./dayOffs.component.scss']
 })
 export class DayOffsComponent implements OnInit {
-  baseData$ = this.store.select(selectDataItems);
+  baseData$ = this.dataQuery.select('dataItems');
   rows: DayOffs[] = [];
   isStoreEmpty: boolean = true;
 
-  constructor(private router: Router, private store: Store) { }
+  constructor(private router: Router, private dataService: DataService, private dataQuery: DataQuery) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -33,7 +29,7 @@ export class DayOffsComponent implements OnInit {
     this.baseData$.subscribe(data => {
       this.isStoreEmpty = !data.dayOffs.length;
       this.rows = data.dayOffs;
-    })
+    });
   }
 
   addData(): void {
@@ -46,18 +42,12 @@ export class DayOffsComponent implements OnInit {
   }
 
   deleteData({ index }: DayOffs): void {
-    this.store.dispatch(
-      deleteDataItemFormSubmitted({
-        dataItemIndex: index,
-      })
-    );
+    this.dataService.delete(index);
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: { dayOffs: this.rows },
-      })
-    );
+    this.dataService.update({
+          dayOffs: this.rows ,
+    });
   }
 }

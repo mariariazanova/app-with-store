@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ProjectModule } from './project/project.module';
-import { environment } from '../environments/environment';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from "./core/state";
+import { NgModule }             from '@angular/core';
+import { BrowserModule }        from '@angular/platform-browser';
+import { AppRoutingModule }     from './app-routing.module';
+import { AppComponent }         from './app.component';
+import { ProjectModule }        from './project/project.module';
+import { environment }          from "../environments/environment";
+import { AkitaNgDevtools }      from "@datorama/akita-ngdevtools";
+import { AkitaPlugin, Store }   from "@datorama/akita";
+import { DataStore }            from "./core/state/data";
+import { AkitaNgEffectsModule } from "@datorama/akita-ng-effects";
 
 @NgModule({
   declarations: [
@@ -17,8 +17,9 @@ import { reducers } from "./core/state";
     BrowserModule,
     AppRoutingModule,
     ProjectModule,
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-    StoreModule.forRoot( reducers , {  }),
+    // AkitaNgDevtools.forRoot()
+    AkitaNgEffectsModule.forRoot([]),
+    environment.production ? [] : AkitaNgDevtools.forRoot( )
   ],
   providers: [],
   bootstrap: [AppComponent]

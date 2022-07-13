@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit }      from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { addDataItemFormSubmitted, selectDataItems } from "../../../core/state/data";
-import { RandomizeService } from "../../services/randomize.service";
-import { Observable, tap } from "rxjs";
-import { BaseData } from "../../interfaces/base-data.interface";
+import { Router }                 from "@angular/router";
+import { RandomizeService }       from "../../services/randomize.service";
+import { Observable, tap }        from "rxjs";
+import { BaseData }               from "../../interfaces/base-data.interface";
+import { DataService }            from "../../../core/state/data/data.service";
+import { DataQuery }              from "../../../core/state/data/data.query";
 
 @Component({
   selector: 'app-general',
@@ -14,11 +14,11 @@ import { BaseData } from "../../interfaces/base-data.interface";
 })
 export class GeneralComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
+  baseData$ = this.dataQuery.select('dataItems');
   data$!: Observable<Partial<BaseData>>;
   defaultValue: Partial<BaseData> = { systemName: RandomizeService.generateUuid() };
 
-  constructor(private router: Router, private store: Store) { }
+  constructor(private router: Router, private dataService: DataService, private dataQuery: DataQuery) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -55,10 +55,6 @@ export class GeneralComponent implements OnInit {
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: this.myForm.value,
-      })
-    );
+    this.dataService.update(this.myForm.value);
   }
 }

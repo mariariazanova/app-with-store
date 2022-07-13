@@ -1,11 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit }      from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  addDataItemFormDialogSubmitted,
-  editDataItemFormDialogSubmitted
-} from "../../../core/state/data";
+import { DataService }            from "../../../core/state/data/data.service";
+import { DataQuery }              from "../../../core/state/data/data.query";
 
 @Component({
   selector: 'app-form',
@@ -16,7 +13,7 @@ export class FormComponent implements OnInit {
   myForm!: FormGroup;
   value = this.route.snapshot.params;
 
-  constructor(private router: Router, private store: Store, private route: ActivatedRoute) { }
+  constructor(private router: Router, private route: ActivatedRoute, private dataService: DataService, private dataQuery: DataQuery) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -41,16 +38,9 @@ export class FormComponent implements OnInit {
 
   submit(): void {
     if (Object.keys(this.value).includes('index')) {
-      this.store.dispatch(
-        editDataItemFormDialogSubmitted({
-          dataItem: this.myForm.value,
-        }));
+      this.dataService.editDayOffs(this.myForm.value);
     } else {
-      this.store.dispatch(
-        addDataItemFormDialogSubmitted({
-          dataItem: this.myForm.value,
-        })
-      );
+      this.dataService.updateDayOffs(this.myForm.value);
     }
 
     this.router.navigate(['/dayOffs']);
