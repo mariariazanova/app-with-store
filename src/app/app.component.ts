@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Store } from "@ngrx/store";
-import { appLoaded } from "./core/state/data";
+import { Store }               from "@ngrx/store";
+import { DataState, loadData } from "./core/state/data";
 
 @Component({
   selector: 'app-root',
@@ -10,9 +10,9 @@ import { appLoaded } from "./core/state/data";
 })
 export class AppComponent implements OnInit {
 
-  constructor(private store: Store) {}
+  constructor(private store: Store<DataState>) {}
 
   ngOnInit(): void {
-    this.store.dispatch(appLoaded());
+    this.store.dispatch(loadData());
   }
 }

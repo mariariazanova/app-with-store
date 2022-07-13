@@ -1,9 +1,16 @@
 import { createAction, props } from '@ngrx/store';
 import { BaseData } from "../../../project/interfaces/base-data.interface";
-import {DayOffs} from "../../../project/components/dayOffs/dayOffs.component";
-import {Code} from "../../../project/components/codes/codes.component";
+import { DayOffs } from "../../../project/components/dayOffs/dayOffs.component";
+import { Code } from "../../../project/components/codes/codes.component";
 
-export const appLoaded = createAction("[App] App Loaded");
+export const loadData = createAction(
+  "[App] Load Data"
+);
+
+export const loadDataSuccess = createAction(
+  "[Data List] Load Data Success",
+  props<{ dataItem: BaseData }>()
+);
 
 export const addDataItemFormSubmitted = createAction(
   "[Add Data] Add Data Item Form Submitted",

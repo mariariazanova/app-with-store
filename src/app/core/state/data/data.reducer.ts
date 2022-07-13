@@ -5,6 +5,11 @@ import { Code } from "../../../project/components/codes/codes.component";
 
 const dataReducer = createReducer(
   initialState,
+  on(DataActions.loadDataSuccess, (state, { dataItem }) => ({
+      ...state,
+      dataItems: { ...state.dataItems, ...dataItem }
+  })),
+
   on(DataActions.addDataItemFormSubmitted, (state, { dataItem }) => ({
     ...state,
     dataItems: { ...state.dataItems, ...dataItem }
@@ -54,6 +59,6 @@ const dataReducer = createReducer(
 );
 
 export function reducer(state: DataState | undefined, action: Action) {
-  console.log(dataReducer(state, action));
+  // console.log(dataReducer(state, action));
   return dataReducer(state, action);
 }
