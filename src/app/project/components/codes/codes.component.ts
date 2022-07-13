@@ -1,12 +1,7 @@
 import { Component, OnInit }                              from '@angular/core';
 import { Router }                                         from "@angular/router";
-import { Store }                                          from "@ngrx/store";
-import {
-  DataState, editCodeItemSubmitted, selectDataItems
-}                                                         from "../../../core/state/data";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
-import { take }                                           from "rxjs";
-import { BaseData }                                       from "../../interfaces/base-data.interface";
+import { StoreService }                                   from "../../services/store.service";
 
 export interface Code {
   code: string,
@@ -22,11 +17,10 @@ export interface Code {
 })
 export class CodesComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
   rows: Code[] = [];
   isStoreEmpty: boolean = true;
 
-  constructor(private router: Router, private store: Store, private fb: FormBuilder) { }
+  constructor(private router: Router, private fb: FormBuilder, private storeService: StoreService) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -52,29 +46,32 @@ export class CodesComponent implements OnInit {
   }
 
   loadData(): void {
-    this.baseData$.subscribe(data => {
-      this.isStoreEmpty = !data.codes.length;
-      this.rows = data.codes;
-    })
+    const data  = this.storeService.store.dataItems;
+
+    this.isStoreEmpty = !data.codes.length;
+    this.rows = data.codes;
   }
 
   patchValue(): void {
-    this.baseData$.subscribe(data => {
-      (<FormArray>this.myForm.get('codes')).patchValue(data.codes);
-    });
+    const data  = this.storeService.store.dataItems;
+
+    (<FormArray>this.myForm.get('codes')).patchValue(data.codes);
   }
 
   submit(): void {
-    this.store.dispatch(
-      editCodeItemSubmitted({
-        dataItem: (<FormArray>this.myForm.get('codes')).value,
-      })
-    );
+    const updatedCodesItems: Code[] = JSON.parse(JSON.stringify(this.storeService.store.dataItems.codes));
+
+    updatedCodesItems.map((code, index) => {
+      Object.assign(code, (<FormArray>this.myForm.get('codes')).value[index]);
+    })
+
+    this.storeService.store = {
+      ...this.storeService.store,
+      dataItems: { ...this.storeService.store.dataItems, codes: updatedCodesItems },
+    };
   }
 
   saveToBack(): void {
-    this.baseData$.subscribe(
-      s => console.log(s)
-    );
+    console.log(this.storeService.store.dataItems);
   }
 }

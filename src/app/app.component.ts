@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Store }               from "@ngrx/store";
-import { DataState, loadData } from "./core/state/data";
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +6,4 @@ import { DataState, loadData } from "./core/state/data";
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
-
-  constructor(private store: Store<DataState>) {}
-
-  ngOnInit(): void {
-    this.store.dispatch(loadData());
-  }
-}
+export class AppComponent { }

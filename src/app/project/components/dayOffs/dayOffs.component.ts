@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  addDataItemFormSubmitted,
-  deleteDataItemFormSubmitted,
-  selectDataItems
-} from "../../../core/state/data";
+import { Router }            from "@angular/router";
+import { StoreService }      from "../../services/store.service";
 
 export interface DayOffs {
   index: string,
@@ -19,21 +14,20 @@ export interface DayOffs {
   styleUrls: ['./dayOffs.component.scss']
 })
 export class DayOffsComponent implements OnInit {
-  baseData$ = this.store.select(selectDataItems);
   rows: DayOffs[] = [];
   isStoreEmpty: boolean = true;
 
-  constructor(private router: Router, private store: Store) { }
+  constructor(private router: Router, private storeService: StoreService) { }
 
   ngOnInit(): void {
     this.loadData();
   }
 
   loadData(): void {
-    this.baseData$.subscribe(data => {
-      this.isStoreEmpty = !data.dayOffs.length;
-      this.rows = data.dayOffs;
-    })
+    const data  = this.storeService.store.dataItems;
+
+    this.isStoreEmpty = !data.dayOffs.length;
+    this.rows = data.dayOffs;
   }
 
   addData(): void {
@@ -46,18 +40,22 @@ export class DayOffsComponent implements OnInit {
   }
 
   deleteData({ index }: DayOffs): void {
-    this.store.dispatch(
-      deleteDataItemFormSubmitted({
-        dataItemIndex: index,
-      })
-    );
+    const dayOffIndex = this.storeService.store.dataItems.dayOffs.findIndex((item) => item.index === index);
+    const updatedDayOffsItems = [...this.storeService.store.dataItems.dayOffs];
+
+    updatedDayOffsItems.splice(dayOffIndex, 1);
+
+    this.storeService.store = {
+      ...this.storeService.store,
+      dataItems: { ...this.storeService.store.dataItems, dayOffs: updatedDayOffsItems },
+    };
+    this.loadData();
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: { dayOffs: this.rows },
-      })
-    );
+    this.storeService.store = {
+      ...this.storeService.store,
+      dataItems: { ...this.storeService.store.dataItems, ...{ dayOffs: this.rows } }
+    };
   }
 }

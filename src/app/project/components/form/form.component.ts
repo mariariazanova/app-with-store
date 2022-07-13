@@ -1,11 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit }      from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import {
-  addDataItemFormDialogSubmitted,
-  editDataItemFormDialogSubmitted
-} from "../../../core/state/data";
+import { StoreService }           from "../../services/store.service";
 
 @Component({
   selector: 'app-form',
@@ -16,7 +12,7 @@ export class FormComponent implements OnInit {
   myForm!: FormGroup;
   value = this.route.snapshot.params;
 
-  constructor(private router: Router, private store: Store, private route: ActivatedRoute) { }
+  constructor(private router: Router, private route: ActivatedRoute, private storeService: StoreService) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -41,16 +37,20 @@ export class FormComponent implements OnInit {
 
   submit(): void {
     if (Object.keys(this.value).includes('index')) {
-      this.store.dispatch(
-        editDataItemFormDialogSubmitted({
-          dataItem: this.myForm.value,
-        }));
+      const dayOffIndex = this.storeService.store.dataItems.dayOffs.findIndex((item) => item.index === this.myForm.value.index);
+      const updatedDayOffsItems = [...this.storeService.store.dataItems.dayOffs];
+
+      updatedDayOffsItems[dayOffIndex] = this.myForm.value;
+
+      this.storeService.store = {
+        ...this.storeService.store,
+        dataItems: { ...this.storeService.store.dataItems, dayOffs: updatedDayOffsItems },
+      };
     } else {
-      this.store.dispatch(
-        addDataItemFormDialogSubmitted({
-          dataItem: this.myForm.value,
-        })
-      );
+      this.storeService.store = {
+        ...this.storeService.store,
+        dataItems: { ...this.storeService.store.dataItems, dayOffs: [ ...this.storeService.store.dataItems.dayOffs, this.myForm.value ] }
+      };
     }
 
     this.router.navigate(['/dayOffs']);

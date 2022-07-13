@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit }      from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { addDataItemFormSubmitted, selectDataItems } from "../../../core/state/data";
-import { Observable, tap } from "rxjs";
-import { BaseData } from "../../interfaces/base-data.interface";
+import { Router }                 from "@angular/router";
+import { BaseData }               from "../../interfaces/base-data.interface";
+import { StoreService }           from "../../services/store.service";
 
 @Component({
   selector: 'app-source',
@@ -13,10 +11,9 @@ import { BaseData } from "../../interfaces/base-data.interface";
 })
 export class SourceComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
-  data$!: Observable<Partial<BaseData>>;
+  data!: Partial<BaseData>;
 
-  constructor(private router: Router, private store: Store) { }
+  constructor(private router: Router, private storeService: StoreService) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -33,7 +30,7 @@ export class SourceComponent implements OnInit {
   }
 
   loadData(): void {
-    this.data$ = this.baseData$.pipe(tap(baseData => this.mapData(baseData)));
+    this.data = this.mapData(this.storeService.store.dataItems);
   }
 
   mapData({ sourceDataBase, sourceSchema, sourceTable }: BaseData): Partial<BaseData> {
@@ -43,16 +40,13 @@ export class SourceComponent implements OnInit {
   }
 
   patchValue(): void {
-    this.data$.subscribe(data => {
-      this.myForm.patchValue(data);
-    });
+    this.myForm.patchValue(this.data);
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: this.myForm.value,
-      })
-    );
+    this.storeService.store = {
+      ...this.storeService.store,
+      dataItems: { ...this.storeService.store.dataItems, ...this.myForm.value }
+    };
   }
 }

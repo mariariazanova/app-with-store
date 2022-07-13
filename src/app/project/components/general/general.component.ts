@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit }      from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
-import { Store }                                                   from "@ngrx/store";
-import { addDataItemFormSubmitted, dataFromBack, selectDataItems } from "../../../core/state/data";
-import { RandomizeService }                                        from "../../services/randomize.service";
-import { Observable, tap } from "rxjs";
-import { BaseData } from "../../interfaces/base-data.interface";
+import { RandomizeService }       from "../../services/randomize.service";
+import { BaseData }               from "../../interfaces/base-data.interface";
+import { Router }                     from "@angular/router";
+import { StoreService } from "../../services/store.service";
 
 @Component({
   selector: 'app-general',
@@ -14,25 +12,15 @@ import { BaseData } from "../../interfaces/base-data.interface";
 })
 export class GeneralComponent implements OnInit {
   myForm!: FormGroup;
-  baseData$ = this.store.select(selectDataItems);
-  data$!: Observable<Partial<BaseData>>;
+  data!: Partial<BaseData>;
   defaultValue: Partial<BaseData> = { systemName: RandomizeService.generateUuid() };
 
-  constructor(private router: Router, private store: Store) { }
+  constructor(private router: Router, private storeService: StoreService) { }
 
   ngOnInit(): void {
-    this.receiveDataFromBack();
     this.buildForm();
     this.loadData();
     this.patchValue();
-  }
-
-  receiveDataFromBack(): void {
-    // this.store.dispatch(
-    //   addDataItemFormSubmitted({
-    //     dataItem: dataFromBack,
-    //   })
-    // );
   }
 
   buildForm(): void {
@@ -45,7 +33,7 @@ export class GeneralComponent implements OnInit {
   }
 
   loadData(): void {
-    this.data$ = this.baseData$.pipe(tap(baseData => this.mapData(baseData)));
+    this.data = this.mapData(this.storeService.store.dataItems);
   }
 
   mapData({ systemName, name, description, executionPriority }: BaseData): Partial<BaseData> {
@@ -55,19 +43,16 @@ export class GeneralComponent implements OnInit {
   }
 
   patchValue(): void {
-    this.data$.subscribe(data => {
-      this.myForm.patchValue(data);
-      if (!this.myForm.get('systemName')?.value) {
-        this.myForm.patchValue(this.defaultValue);
-      }
-    });
+    this.myForm.patchValue(this.data);
+    if (!this.myForm.get('systemName')?.value) {
+      this.myForm.patchValue(this.defaultValue);
+    }
   }
 
   submit(): void {
-    this.store.dispatch(
-      addDataItemFormSubmitted({
-        dataItem: this.myForm.value,
-      })
-    );
+    this.storeService.store = {
+      ...this.storeService.store,
+      dataItems: { ...this.storeService.store.dataItems, ...this.myForm.value }
+    };
   }
 }
