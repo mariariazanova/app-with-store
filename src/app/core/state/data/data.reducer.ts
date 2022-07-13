@@ -54,5 +54,6 @@ const dataReducer = createReducer(
 );
 
 export function reducer(state: DataState | undefined, action: Action) {
+  console.log(dataReducer(state, action));
   return dataReducer(state, action);
 }

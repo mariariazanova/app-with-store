@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { addDataItemFormSubmitted, selectDataItems } from "../../../core/state/data";
-import { RandomizeService } from "../../services/randomize.service";
+import { Store }                                                   from "@ngrx/store";
+import { addDataItemFormSubmitted, dataFromBack, selectDataItems } from "../../../core/state/data";
+import { RandomizeService }                                        from "../../services/randomize.service";
 import { Observable, tap } from "rxjs";
 import { BaseData } from "../../interfaces/base-data.interface";
 
@@ -21,9 +21,18 @@ export class GeneralComponent implements OnInit {
   constructor(private router: Router, private store: Store) { }
 
   ngOnInit(): void {
+    this.receiveDataFromBack();
     this.buildForm();
     this.loadData();
     this.patchValue();
+  }
+
+  receiveDataFromBack(): void {
+    // this.store.dispatch(
+    //   addDataItemFormSubmitted({
+    //     dataItem: dataFromBack,
+    //   })
+    // );
   }
 
   buildForm(): void {

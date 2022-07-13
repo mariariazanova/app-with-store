@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
+import { Component, OnInit }                              from '@angular/core';
+import { Router }                                         from "@angular/router";
+import { Store }                                          from "@ngrx/store";
 import {
-  editCodeItemSubmitted,
-  selectDataItems
-} from "../../../core/state/data";
+  DataState, editCodeItemSubmitted, selectDataItems
+}                                                         from "../../../core/state/data";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { take }                                           from "rxjs";
+import { BaseData }                                       from "../../interfaces/base-data.interface";
 
 export interface Code {
   code: string,
@@ -68,6 +69,12 @@ export class CodesComponent implements OnInit {
       editCodeItemSubmitted({
         dataItem: (<FormArray>this.myForm.get('codes')).value,
       })
+    );
+  }
+
+  saveToBack(): void {
+    this.baseData$.subscribe(
+      s => console.log(s)
     );
   }
 }
