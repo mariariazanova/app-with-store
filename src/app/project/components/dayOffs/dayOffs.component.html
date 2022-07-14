@@ -14,7 +14,7 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let row of rows">
+    <tr *ngFor="let row of rows" [class.deleted]="row.isDeleted">
       <td>{{ row.type }}</td>
 
       <td>{{ row.days }}</td>

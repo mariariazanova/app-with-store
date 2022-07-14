@@ -1,29 +1,38 @@
-import { Component, OnInit }      from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup }       from "@angular/forms";
 import { Router }                 from "@angular/router";
 import { RandomizeService }       from "../../services/randomize.service";
-import { Observable, tap }        from "rxjs";
 import { BaseData }               from "../../interfaces/base-data.interface";
 import { DataService }            from "../../../core/state/data/data.service";
 import { DataQuery }              from "../../../core/state/data/data.query";
+import { AkitaNgFormsManager }    from "@datorama/akita-ng-forms-manager";
+import { ClientService }          from "../../services/client.service";
 
 @Component({
   selector: 'app-general',
   templateUrl: './general.component.html',
   styleUrls: ['./general.component.scss']
 })
-export class GeneralComponent implements OnInit {
+export class GeneralComponent implements OnInit, OnDestroy {
   myForm!: FormGroup;
-  baseData$ = this.dataQuery.select('dataItems');
-  data$!: Observable<Partial<BaseData>>;
   defaultValue: Partial<BaseData> = { systemName: RandomizeService.generateUuid() };
 
-  constructor(private router: Router, private dataService: DataService, private dataQuery: DataQuery) { }
+  constructor(
+    private router: Router,
+    private formsManager: AkitaNgFormsManager<any>,
+    private dataService: DataService,
+    private dataQuery: DataQuery,
+    private clientService: ClientService
+  ) { }
 
   ngOnInit(): void {
     this.buildForm();
-    this.loadData();
     this.patchValue();
+    this.storeForm();
+  }
+
+  ngOnDestroy() {
+    this.formsManager.unsubscribe();
   }
 
   buildForm(): void {
@@ -35,26 +44,16 @@ export class GeneralComponent implements OnInit {
     });
   }
 
-  loadData(): void {
-    this.data$ = this.baseData$.pipe(tap(baseData => this.mapData(baseData)));
-  }
-
-  mapData({ systemName, name, description, executionPriority }: BaseData): Partial<BaseData> {
-    return {
-      systemName, name, description, executionPriority
-    }
-  }
-
   patchValue(): void {
-    this.data$.subscribe(data => {
-      this.myForm.patchValue(data);
-      if (!this.myForm.get('systemName')?.value) {
-        this.myForm.patchValue(this.defaultValue);
-      }
-    });
+    this.myForm.patchValue(this.clientService.getDataFromBack() || this.defaultValue);
+  }
+
+  storeForm(): void {
+    console.log(this.formsManager.getForm('general'));
+    this.formsManager.upsert('general', this.myForm);
   }
 
   submit(): void {
-    this.dataService.update(this.myForm.value);
+    // this.dataService.update(this.myForm.value);
   }
 }

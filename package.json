@@ -17,6 +17,7 @@
     "@datorama/akita": "^4.10.4",
     "@datorama/akita-ngdevtools": "^5.0.2",
     "@datorama/akita-ng-effects": "^1.0.6",
+    "@datorama/akita-ng-forms-manager": "^3.0.1",
     "@angular/core": "^14.0.0",
     "@angular/forms": "^14.0.0",
     "@angular/platform-browser": "^14.0.0",

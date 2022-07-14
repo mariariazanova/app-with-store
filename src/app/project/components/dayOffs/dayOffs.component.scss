@@ -1,4 +1,9 @@
 table {
+
+  tr.deleted {
+    background-color: red;
+  }
+
   th, td {
     width: 200px;
     border: 1px solid black;

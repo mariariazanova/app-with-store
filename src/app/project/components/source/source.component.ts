@@ -1,27 +1,35 @@
-import { Component, OnInit }      from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup }       from "@angular/forms";
 import { Router }                 from "@angular/router";
-import { Observable, tap }        from "rxjs";
-import { BaseData }               from "../../interfaces/base-data.interface";
 import { DataService }            from "../../../core/state/data/data.service";
 import { DataQuery }              from "../../../core/state/data/data.query";
+import { AkitaNgFormsManager }    from "@datorama/akita-ng-forms-manager";
+import { ClientService }          from "../../services/client.service";
 
 @Component({
   selector: 'app-source',
   templateUrl: './source.component.html',
   styleUrls: ['./source.component.scss']
 })
-export class SourceComponent implements OnInit {
+export class SourceComponent implements OnInit, OnDestroy {
   myForm!: FormGroup;
-  baseData$ = this.dataQuery.select('dataItems');
-  data$!: Observable<Partial<BaseData>>;
 
-  constructor(private router: Router, private dataService: DataService, private dataQuery: DataQuery) { }
+  constructor(
+    private router: Router,
+    private formsManager: AkitaNgFormsManager<any>,
+    private dataService: DataService,
+    private dataQuery: DataQuery,
+    private clientService: ClientService
+  ) { }
 
   ngOnInit(): void {
     this.buildForm();
-    this.loadData();
     this.patchValue();
+    this.storeForm();
+  }
+
+  ngOnDestroy() {
+    this.formsManager.unsubscribe();
   }
 
   buildForm(): void {
@@ -32,23 +40,15 @@ export class SourceComponent implements OnInit {
     });
   }
 
-  loadData(): void {
-    this.data$ = this.baseData$.pipe(tap(baseData => this.mapData(baseData)));
-  }
-
-  mapData({ sourceDataBase, sourceSchema, sourceTable }: BaseData): Partial<BaseData> {
-    return {
-      sourceDataBase, sourceSchema, sourceTable
-    }
-  }
-
   patchValue(): void {
-    this.data$.subscribe(data => {
-      this.myForm.patchValue(data);
-    });
+    this.myForm.patchValue(this.clientService.getDataFromBack());
+  }
+
+  storeForm(): void {
+    this.formsManager.upsert('source', this.myForm);
   }
 
   submit(): void {
-    this.dataService.update(this.myForm.value);
+    // this.dataService.update(this.myForm.value);
   }
 }

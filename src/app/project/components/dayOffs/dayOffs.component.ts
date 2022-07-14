@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router }            from "@angular/router";
-import { DataService }       from "../../../core/state/data/data.service";
-import { DataQuery }         from "../../../core/state/data/data.query";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router }                       from "@angular/router";
+import { DataService }         from "../../../core/state/data/data.service";
+import { DataQuery }           from "../../../core/state/data/data.query";
+import { AkitaNgFormsManager } from "@datorama/akita-ng-forms-manager";
 
 export interface DayOffs {
   index: string,
   type: string,
   days: string,
+  isDeleted?: boolean,
 }
 
 @Component({
@@ -14,15 +16,19 @@ export interface DayOffs {
   templateUrl: './dayOffs.component.html',
   styleUrls: ['./dayOffs.component.scss']
 })
-export class DayOffsComponent implements OnInit {
+export class DayOffsComponent implements OnInit, OnDestroy {
   baseData$ = this.dataQuery.select('dataItems');
   rows: DayOffs[] = [];
   isStoreEmpty: boolean = true;
 
-  constructor(private router: Router, private dataService: DataService, private dataQuery: DataQuery) { }
+  constructor(private router: Router, private formsManager: AkitaNgFormsManager<any>, private dataService: DataService, private dataQuery: DataQuery) { }
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  ngOnDestroy() {
+    this.formsManager.unsubscribe();
   }
 
   loadData(): void {
@@ -42,10 +48,14 @@ export class DayOffsComponent implements OnInit {
   }
 
   deleteData({ index }: DayOffs): void {
-    this.dataService.delete(index);
+    this.rows[+index].isDeleted = true;
+    this.dataService.update({
+      dayOffs: this.rows ,
+    });
   }
 
   submit(): void {
+    this.rows.forEach(row => row.isDeleted ? this.dataService.delete(row.index) : row);
     this.dataService.update({
           dayOffs: this.rows ,
     });
